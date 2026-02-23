@@ -3,6 +3,7 @@ uvicorn
 sqlalchemy
 asyncpg
 psycopg2-binary
+aiosqlite
 python-dotenv
 langchain-cerebras
 langchain
