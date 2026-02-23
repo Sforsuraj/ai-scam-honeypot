@@ -46,7 +46,7 @@ export default function Home() {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/honeypot/sessions');
+      const res = await fetch('https://ai-scam-honeypot-6o4l.onrender.com/honeypot/sessions');
       const data = await res.json();
       setSessions(data.reverse()); // Show newest first
     } catch (error) {
@@ -56,7 +56,7 @@ export default function Home() {
 
   const loadSession = async (id: string) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/honeypot/session/${id}`);
+      const res = await fetch(`https://ai-scam-honeypot-6o4l.onrender.com/honeypot/session/${id}`);
       const data = await res.json();
       if (data.error) return;
 
@@ -107,7 +107,7 @@ export default function Home() {
     }
 
     try {
-      await fetch(`http://127.0.0.1:8000/honeypot/session/${id}`, {
+      await fetch(`https://ai-scam-honeypot-6o4l.onrender.com/honeypot/session/${id}`, {
         method: 'DELETE',
       });
     } catch (error) {
@@ -132,7 +132,7 @@ export default function Home() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/honeypot/message', {
+      const response = await fetch('https://ai-scam-honeypot-6o4l.onrender.com/honeypot/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
