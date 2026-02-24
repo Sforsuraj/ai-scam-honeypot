@@ -47,12 +47,14 @@ SILENT ANALYSIS (DO NOT SHOW):
 
 ---
 
-OUTPUT FORMAT (STRICT JSON ONLY):
+---
+
+OUTPUT FORMAT (STRICT JSON ONLY - NO MARKDOWN, NO EXTRA TEXT):
 
 {
-  "reply": "",
-  "is_scam": true or false,
-  "confidence": number between 0 and 1,
+  "reply": "your message here",
+  "is_scam": false,
+  "confidence": 0.0,
   "extracted": {
     "upi": [],
     "phones": [],

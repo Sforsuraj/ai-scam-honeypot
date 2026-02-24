@@ -64,8 +64,10 @@ async def honeypot_message(
     # -----------------------------
     try:
         llm_output = await generate_reply(chat.history)
+        print(f"--- RAW LLM OUTPUT ---\n{llm_output}\n----------------------")
         data = json.loads(llm_output)
-    except Exception:
+    except Exception as e:
+        print(f"--- JSON PARSE ERROR ---\n{e}\n------------------------")
         data = {
             "reply": "hmm sorry… can you explain again?",
             "is_scam": False,
