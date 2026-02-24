@@ -1,7 +1,7 @@
 import os
 import json
 from langchain_cerebras import ChatCerebras
-from backend.core.persona import PERSONA_PROMPT
+from app.core.persona import PERSONA_PROMPT
 
 if "OPENAI_API_KEY" in os.environ and "CEREBRAS_API_KEY" not in os.environ:
     os.environ["CEREBRAS_API_KEY"] = os.environ["OPENAI_API_KEY"]

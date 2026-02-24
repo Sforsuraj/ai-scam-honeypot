@@ -5,9 +5,9 @@ from pydantic import BaseModel
 from typing import Optional
 import json
 
-from backend.db.session import get_db
-from backend.db.models import ChatSession, ScamIntel
-from backend.core.llm import generate_reply
+from app.db.session import get_db
+from app.db.models import ChatSession, ScamIntel
+from app.core.llm import generate_reply
 
 router = APIRouter()
 

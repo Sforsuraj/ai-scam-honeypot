@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Boolean, Float, JSON
 from sqlalchemy.ext.mutable import MutableList
-from backend.db.base import Base
+from app.db.base import Base
 import uuid
 
 
