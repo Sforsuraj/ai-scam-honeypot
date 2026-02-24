@@ -27,24 +27,44 @@ async def generate_reply(history: list):
         response = await llm.ainvoke(messages)
         content = response.content.strip()
         
-        # Aggressive Regex Extraction to bypass corrupted JSON formatting
-        reply_match = re.search(r'"reply"\s*:\s*"([^"]+)"', content, re.IGNORECASE)
-        scam_match = re.search(r'"is_scam"\s*:\s*(true|false)', content, re.IGNORECASE)
-        conf_match = re.search(r'"confidence"\s*:\s*([0-9.]+)', content, re.IGNORECASE)
-        
-        reply_text = reply_match.group(1) if reply_match else "one small doubt..."
-        is_scam = True if (scam_match and scam_match.group(1).lower() == 'true') else False
-        confidence = float(conf_match.group(1)) if conf_match else 0.0
-        
-        # Try to parse extracted dictionary if possible, else default to empty
+        reply_text = "one small doubt..."
+        is_scam = False
+        confidence = 0.0
         extracted = {}
+
+        # 1. First, try standard JSON Parsing (best case scenario)
         try:
-            ext_match = re.search(r'"extracted"\s*:\s*(\{.*?\})', content, re.IGNORECASE | re.DOTALL)
-            if ext_match:
-                extracted = json.loads(ext_match.group(1).replace("'", '"'))
-        except:
-            extracted = {}
+            # Strip markdown code blocks if the LLM output them
+            clean_content = content.replace("```json", "").replace("```", "").strip()
+            data = json.loads(clean_content)
             
+            reply_text = data.get("reply", "...")
+            is_scam = bool(data.get("is_scam", False))
+            confidence = float(data.get("confidence", 0.0))
+            extracted = data.get("extracted", {})
+            
+        except json.JSONDecodeError:
+            # 2. If JSON is corrupted, fallback to Aggressive Regex Extraction
+            reply_match = re.search(r'"reply"\s*:\s*"([^"]+)"', content, re.IGNORECASE)
+            scam_match = re.search(r'"is_scam"\s*:\s*(true|false)', content, re.IGNORECASE)
+            conf_match = re.search(r'"confidence"\s*:\s*([0-9.]+)', content, re.IGNORECASE)
+            
+            # If the regex fails entirely on the reply, just return the raw LLM string instead of crashing
+            if reply_match:
+                reply_text = reply_match.group(1)
+            else:
+                reply_text = content[:200] # Fallback to returning the raw response
+
+            is_scam = True if (scam_match and scam_match.group(1).lower() == 'true') else False
+            confidence = float(conf_match.group(1)) if conf_match else 0.0
+            
+            try:
+                ext_match = re.search(r'"extracted"\s*:\s*(\{.*?\})', content, re.IGNORECASE | re.DOTALL)
+                if ext_match:
+                    extracted = json.loads(ext_match.group(1).replace("'", '"'))
+            except:
+                pass
+                
         final_data = {
             "reply": reply_text,
             "is_scam": is_scam,
